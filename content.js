@@ -19,7 +19,8 @@ function removeJobs() {
   const selectors = [
     'article',
     'div.result-item',
-    'div[data-view-name="job-card"]'
+    'div[data-view-name="job-card"]',
+    '#mosaic-provider-jobcards > ul > li'
   ].join(', ');
 
   // Select all elements that match the defined selectors

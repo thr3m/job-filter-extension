@@ -1,6 +1,6 @@
 {
   "name": "Hide Jobs",
-  "description": "Hide specific job offers from Linkedin, Computrabajo and elempleo.",
+  "description": "Hide specific job offers from Linkedin, Computrabajo,elempleo and indeed",
   "version": "1.0",
   "manifest_version": 3,
   "permissions": [
@@ -14,7 +14,8 @@
       "matches": [
         "*://*.computrabajo.com/*",
         "*://*.elempleo.com/*",
-        "*://*.linkedin.com/*"
+        "*://*.linkedin.com/*",
+        "*://*.indeed.com/*"
       ],
       "js": [
         "content.js"
