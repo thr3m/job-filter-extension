@@ -1,3 +1,4 @@
+/* This class is added to elements that are removed by the extension */
 .removed-by-extension {
-  display: none !important;
+  display: none !important; /* Hide the element */
 }
