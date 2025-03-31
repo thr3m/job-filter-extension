@@ -1,0 +1,38 @@
+{
+  "name": "Hide Jobs",
+  "description": "Hide specific job offers from Linkedin, Computrabajo and elempleo.",
+  "version": "1.0",
+  "manifest_version": 3,
+  "permissions": [
+    "storage"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.computrabajo.com/*",
+        "*://*.elempleo.com/*",
+        "*://*.linkedin.com/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_end"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "*.*"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ],
+  "content_security_policy": {
+    "extension_pages": "default-src 'self' frame-src  *.licdn.com *.linkedin.com"
+  }
+}
