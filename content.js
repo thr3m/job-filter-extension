@@ -12,9 +12,7 @@ function removeJobs() {
   console.log('removeJobs.>');
 
   // Define the company name to search for (case-insensitive)
-  const companyName = "bairesdev";
-  // Convert the company name to lowercase for case-insensitive matching
-  const searchTerm = companyName.toLowerCase();
+  const searchTerms = ["bairesdev","agileengine"]
   // Define CSS selectors to target job posting elements
   const selectors = [
     'article',
@@ -33,9 +31,11 @@ function removeJobs() {
       {
         // Define a filter to accept only text nodes that contain the search term
         acceptNode(node) {
-          return node.textContent.toLowerCase().includes(searchTerm) ?
-            NodeFilter.FILTER_ACCEPT :
-            NodeFilter.FILTER_REJECT;
+          // Assuming 'searchTerms' is an array of strings like ['term1', 'term2', 'term3']
+          const nodeText = node.textContent.toLowerCase();
+          const matchFound = searchTerms.some(term => nodeText.includes(term.toLowerCase()));
+
+          return matchFound ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
         }
       }
     );
