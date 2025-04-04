@@ -5,14 +5,36 @@ let isEnabled = false;
 // Use a WeakMap to store the original display styles of elements
 const originalDisplays = new WeakMap();
 
+let loadedTags = [];
+let oldTags = [];
+
+const createTreeWalker = (element, searchValue = []) => {
+  return document.createTreeWalker(
+    element,
+    NodeFilter.SHOW_TEXT,
+    {
+      // Define a filter to accept only text nodes that contain the search term
+      acceptNode(node) {
+        // Assuming 'searchTerms' is an array of strings like ['term1', 'term2', 'term3']
+        const nodeText = node.textContent.toLowerCase();
+        const matchFound = searchValue.some(term => nodeText.includes(term.toLowerCase()));
+
+        return matchFound ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+      }
+    }
+  );
+}
+
+
 /**
  * Function to remove job postings based on a specific company name.
  */
 function removeJobs() {
-  console.log('removeJobs.>');
+  console.log('removeJobs');
 
   // Define the company name to search for (case-insensitive)
-  const searchTerms = ["bairesdev","agileengine"]
+  const searchTerms = loadedTags
+  console.log("searchTerms>", searchTerms);
   // Define CSS selectors to target job posting elements
   const selectors = [
     'article',
@@ -23,22 +45,10 @@ function removeJobs() {
 
   // Select all elements that match the defined selectors
   document.querySelectorAll(selectors).forEach(element => {
-    console.log('element.>', element);
+    // console.log('element.>', element);
     // Create a TreeWalker to traverse the element's text nodes
-    const treeWalker = document.createTreeWalker(
-      element,
-      NodeFilter.SHOW_TEXT,
-      {
-        // Define a filter to accept only text nodes that contain the search term
-        acceptNode(node) {
-          // Assuming 'searchTerms' is an array of strings like ['term1', 'term2', 'term3']
-          const nodeText = node.textContent.toLowerCase();
-          const matchFound = searchTerms.some(term => nodeText.includes(term.toLowerCase()));
-
-          return matchFound ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
-        }
-      }
-    );
+    const treeWalker = createTreeWalker(element, searchTerms);
+    const treeWalkerOldTags = createTreeWalker(element, oldTags);
 
     // Check if the TreeWalker finds a matching text node
     if (treeWalker.nextNode()) {
@@ -53,9 +63,19 @@ function removeJobs() {
         // Restore original display when disabled
         element.style.display = originalDisplays.get(element) || '';
       }
-      console.log(" element.style.", element.style)
+      // console.log(" element.style.", element.style)
 
     }
+
+    if (treeWalkerOldTags.nextNode()) {
+      console.log("loadedTags treeWalkerOldTags.", loadedTags)
+      if (isEnabled) {
+        // Restore original display when disabled
+        element.style.display = originalDisplays.get(element) || '';
+      }
+    }
+
+
   });
 }
 
@@ -63,8 +83,11 @@ function removeJobs() {
  * Function to initialize the MutationObserver.
  * @param {boolean} enable - Whether to enable or disable the observer.
  */
-function initObserver(enable) {
-  isEnabled = enable;
+function initObserver(enable, newTags) {
+  isEnabled = enable
+  loadedTags = newTags
+  console.log("isEnabled from init obv", isEnabled);
+  console.log("newTags from init obv", newTags);
   if (enable) {
     // If enabling, create and start the observer if it doesn't exist
     if (!observer) {
@@ -87,16 +110,30 @@ function initObserver(enable) {
 
 // Listen for changes in the Chrome storage
 chrome.storage.onChanged.addListener((changes) => {
-  if (changes.enabled) {
+  console.log('changes.tagsSelected>>', changes)
+
+  if (changes.enabled || changes.tagsSelected) {
+
     // When the 'enabled' value changes, initialize the observer with the new value
-    initObserver(changes.enabled.newValue);
+    newTags = changes.tagsSelected !== undefined ? changes.tagsSelected.newValue : loadedTags;
+    console.log("newTags>>>", newTags)
+    console.log(" loadedTags>>>", loadedTags)
+
+    oldTags = loadedTags.filter(tag => !newTags.includes(tag));
+    enable = changes.enabled?.newValue === undefined ? isEnabled : changes.enabled?.newValue
+
+    initObserver(enable, newTags);
   }
 });
 
 // Get the initial state from Chrome storage
-chrome.storage.local.get('enabled', (data) => {
+chrome.storage.local.get({ enabled: false, tagsSelected: [] }, (data) => {
   const enabled = data.enabled !== undefined ? data.enabled : false;
-  initObserver(enabled);
+  const tagsSelected = data.tagsSelected !== undefined ? data.tagsSelected : [];
+
+  initObserver(enabled, tagsSelected);
+  loadedTags = data.tagsSelected;
 });
+
 
 console.log('[Extension] Content script loaded');
