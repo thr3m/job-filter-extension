@@ -40,7 +40,8 @@ function removeJobs() {
     'article',
     'div.result-item',
     'div[data-view-name="job-card"]',
-    '#mosaic-provider-jobcards > ul > li'
+    '#mosaic-provider-jobcards > ul > li',
+    '.scaffold-layout__list-item'//linkedin
   ].join(', ');
 
   // Select all elements that match the defined selectors
@@ -57,6 +58,7 @@ function removeJobs() {
         // Hide elements when enabled
         if (!originalDisplays.has(element)) {
           originalDisplays.set(element, element.style.display);
+          console.log("element.// to hide",element);
         }
         element.setAttribute('style', 'display: none !important;');
       } else {
