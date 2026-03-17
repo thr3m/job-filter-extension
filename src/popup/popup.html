@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hide Jobs</title>
+  </head>
+  <body class="w-[400px] bg-gray-100 p-4">
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <h2 class="card-title justify-center text-2xl font-bold">Hide Jobs</h2>
+        
+        <div class="form-control w-full mt-4">
+          <label class="label">
+            <span class="label-text font-semibold">Keywords to hide:</span>
+          </label>
+          <div 
+            id="tag-container"
+            class="flex flex-wrap items-center gap-2 p-3 border border-gray-300 rounded-lg bg-white min-h-[50px] focus-within:ring-2 focus-within:ring-primary focus-within:border-transparent transition-all cursor-text"
+          >
+            <input
+              type="text"
+              id="tag-input"
+              class="flex-grow bg-transparent outline-none text-sm min-w-[120px]"
+              placeholder="Type and press Enter..."
+              autocomplete="off"
+            />
+          </div>
+          <label class="label">
+            <span class="label-text-alt text-gray-500">e.g., BairesDev, Senior, Remote...</span>
+          </label>
+        </div>
+
+        <div class="divider">Settings</div>
+
+        <div class="flex items-center justify-between bg-gray-50 p-3 rounded-lg mb-4">
+          <span class="font-medium">Extension Status</span>
+          <input type="checkbox" id="btn-toggle" class="toggle toggle-primary" />
+        </div>
+
+        <div class="bg-blue-50 p-4 rounded-lg">
+          <h3 class="text-xs font-bold text-blue-800 uppercase tracking-wider mb-2">Supported Sites</h3>
+          <div class="flex flex-wrap gap-2">
+            <span class="badge badge-outline badge-info text-[10px]">LinkedIn</span>
+            <span class="badge badge-outline badge-info text-[10px]">Indeed</span>
+            <span class="badge badge-outline badge-info text-[10px]">Computrabajo</span>
+            <span class="badge badge-outline badge-info text-[10px]">ElEmpleo</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="./popup.ts"></script>
+  </body>
+</html>

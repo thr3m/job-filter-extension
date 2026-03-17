@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.chip {
+  @apply bg-gray-200 rounded-full px-3 py-1 text-sm font-medium text-gray-700 flex items-center gap-1 whitespace-nowrap;
+}
+
+.chip-remove {
+  @apply text-gray-500 hover:text-gray-700 focus:outline-none;
+}
