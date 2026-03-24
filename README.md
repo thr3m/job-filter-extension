@@ -1,6 +1,6 @@
-# Hide Jobs Extension
+# Job Filter
 
-A Chrome extension designed to declutter your job search by automatically hiding job offers that match specific keywords or companies on popular job platforms.
+Hide unwanted job post automatically based on your keywords on popular job platforms.
 
 ## 🚀 Features
 

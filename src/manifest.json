@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Hide Jobs",
+  "name": "Job Filter",
   "version": "1.1.0",
-  "description": "Hide specific job offers from Linkedin, Computrabajo, elempleo and indeed",
+  "description": "Hide unwanted job post automatically based on your keywords.",
   "permissions": ["storage"],
   "action": {
     "default_popup": "src/popup/popup.html"

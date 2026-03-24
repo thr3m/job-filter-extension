@@ -4,8 +4,6 @@ const SELECTORS = [
   'div[data-view-name="job-card"]',
   '#mosaic-provider-jobcards > div > ul > li',  // indeed
   '.scaffold-layout__list-item', // linkedin list
-  '.job-card-container', // linkedin another card type
-  '.base-card', // linkedin generic card
   '[data-testid="job-card"]' // general testid
 ].join(', ');
 

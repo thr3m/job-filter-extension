@@ -11,7 +11,7 @@ const originalDisplays = new WeakMap<HTMLElement, string>();
  */
 function processJobCards(elements?: HTMLElement[]) {
   const cards = elements || Scanner.findJobCards();
-  
+  console.log(`Cards found: ${cards.length}`)
   cards.forEach(card => {
     // Only process if it's actually a job card
     if (!elements || Scanner.isJobCard(card)) {
@@ -55,37 +55,48 @@ async function init() {
 
   // Observe DOM changes - starting from documentElement because we run at document_start
   const observer = new MutationObserver((mutations) => {
-    const nodesToProcess = new Set<HTMLElement>();
-    
-    for (const mutation of mutations) {
-      // Handle added nodes
-      for (const node of mutation.addedNodes) {
-        if (node instanceof HTMLElement) {
-          if (Scanner.isJobCard(node)) {
-            nodesToProcess.add(node);
-          } else {
-            const nestedCards = Scanner.findJobCards(node);
-            nestedCards.forEach(card => nodesToProcess.add(card));
+    try {
+      const nodesToProcess = new Set<HTMLElement>();
+      
+      for (const mutation of mutations) {
+        // Handle added nodes
+        for (const node of mutation.addedNodes) {
+          if (node instanceof HTMLElement) {
+            if (Scanner.isJobCard(node)) {
+              nodesToProcess.add(node);
+            } else {
+              const nestedCards = Scanner.findJobCards(node);
+              nestedCards.forEach(card => nodesToProcess.add(card));
+            }
+          }
+        }
+
+        // Handle text/content updates within job cards
+        if (mutation.type === 'characterData' || mutation.type === 'childList') {
+          const target = mutation.target as Node;
+          // Fix: Safely find the closest job card from either Element or Text node
+          const targetElement = target.nodeType === Node.ELEMENT_NODE 
+            ? (target as HTMLElement) 
+            : target.parentElement;
+            
+          if (targetElement) {
+            const closestCard = targetElement.closest<HTMLElement>(Scanner.getSelector());
+            if (closestCard) {
+              nodesToProcess.add(closestCard);
+            }
           }
         }
       }
 
-      // Handle text/content updates within job cards
-      if (mutation.type === 'characterData' || mutation.type === 'childList') {
-        const target = mutation.target as HTMLElement;
-        const closestCard = target.closest<HTMLElement>(Scanner.getSelector());
-        if (closestCard) {
-          nodesToProcess.add(closestCard);
-        }
+      if (nodesToProcess.size > 0) {
+        processJobCards(Array.from(nodesToProcess));
       }
-    }
 
-    if (nodesToProcess.size > 0) {
-      processJobCards(Array.from(nodesToProcess));
+      // Always schedule a global scan to ensure consistency
+      debouncedGlobalProcess();
+    } catch (error) {
+      console.error('Error in MutationObserver callback:', error);
     }
-
-    // Always schedule a global scan to ensure consistency
-    debouncedGlobalProcess();
   });
 
   observer.observe(document.documentElement, {
