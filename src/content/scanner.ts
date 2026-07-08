@@ -2,9 +2,9 @@ const SELECTORS = [
   'article',
   'div.result-item',
   'div[data-view-name="job-card"]',
-  '#mosaic-provider-jobcards > div > ul > li',  // indeed
-  '.scaffold-layout__list-item', // linkedin list
-  '[data-testid="job-card"]' // general testid
+  '#mosaic-provider-jobcards > div > ul > li', // indeed
+  '.scaffold-layout__list-item', // linkedin list - deprecated
+  '[componentkey^="job-card-component-ref-"][tabindex="0"]', // linkedin list
 ].join(', ');
 
 export const Scanner = {
@@ -27,5 +27,5 @@ export const Scanner = {
    */
   isJobCard(element: HTMLElement): boolean {
     return element.matches(SELECTORS);
-  }
+  },
 };
